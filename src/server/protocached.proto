@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package protocached;
+
+message GetRequest {
+    string key = 1;
+
+    // Next id: 2
+}
+
+message GetResponse {
+    string value = 1;
+
+    // Next id: 2
+}
+
+message SetRequest {
+    string key = 1;
+    string value = 2; // TODO(joejoevictor): Not sure if this is the right type.
+
+    // Next id: 3
+}
+
+message SetResponse {
+    string result = 1; // TODO(joejoevictor): We should probably use enum here.
+
+    // Next id: 4
+}
+
+service ProtoCachedService {
+    rpc get(GetRequest) returns (GetResponse);
+    rpc set(SetRequest) returns (SetResponse);
+}
