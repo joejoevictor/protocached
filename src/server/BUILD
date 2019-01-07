@@ -18,6 +18,7 @@ cc_binary(
         "main.cc",
     ],
     deps = [
-        ":protocached_cc_proto"
+        ":protocached_cc_proto",
+        "@com_github_grpc_grpc//:grpc++",
     ],
 )
