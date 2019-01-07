@@ -4,15 +4,15 @@ package protocached;
 
 // Result for rpc response
 message ResponseResult {
-  enum ResultType {
+  enum ResultStatus {
     SUCCESS = 0;
     ERROR = 1;
   }
 
   // specify the response result
-  ResultType result = 1;
+  ResultStatus result_status = 1;
   // optional error message if the result is ERROR
-  string errorMsg = 2;
+  string error_message = 2;
 
   // Next id: 3
 }

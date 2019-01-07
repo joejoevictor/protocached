@@ -1,4 +1,5 @@
 # BUILD file for protos
+package(default_visibility = ["//visibility:public"])
 proto_library(
     name = "protocached_proto",
     srcs = [
@@ -11,7 +12,5 @@ cc_proto_library(
     deps = [
         ":protocached_proto"
     ],
-    visibility = ["//visibility:public"],
 )
-
 
