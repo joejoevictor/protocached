@@ -15,7 +15,6 @@ load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
 
 grpc_deps()
 
-
 # proto_library, cc_proto_library, and java_proto_library rules implicitly
 # depend on @com_google_protobuf for protoc and proto runtimes.
 # This statement defines the @com_google_protobuf repo.
@@ -25,3 +24,4 @@ http_archive(
     strip_prefix = "protobuf-3.6.1.2",
     urls = ["https://github.com/google/protobuf/archive/v3.6.1.2.zip"],
 )
+
