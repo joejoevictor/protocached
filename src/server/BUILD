@@ -1,24 +1,11 @@
-proto_library(
-    name = "protocached_proto",
-    srcs = [
-        "protocached.proto",
-    ],
-)
-
-cc_proto_library(
-    name = "protocached_cc_proto",
-    deps = [
-        ":protocached_proto"
-    ],
-)
-
+# BUILD file for protocached server
 cc_binary(
     name = "server",
     srcs = [
         "main.cc",
     ],
     deps = [
-        ":protocached_cc_proto",
+        "//src/proto:protocached_cc_proto",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )

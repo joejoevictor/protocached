@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package protocached;
+
+// Result for rpc response
+message ResponseResult {
+  enum ResultType {
+    SUCCESS = 0;
+    ERROR = 1;
+  }
+
+  // specify the response result
+  ResultType result = 1;
+  // optional error message if the result is ERROR
+  string errorMsg = 2;
+
+  // Next id: 3
+}
+
+// Binary obj that will be stored as value in the cache.
+//
+// It will be easier to add/modify this CachedValue proto message than changing
+// get/set request and response proto messages if we intend to support more
+// types in the future.
+message CachedValue {
+  string value = 1;
+
+  // Next id: 2
+}
+
+message GetRequest {
+  // Currently only support string as key
+  string key = 1;
+
+  // Next id: 2
+}
+
+message GetResponse {
+  ResponseResult result = 1;
+  CachedValue value = 2;
+
+  // Next id: 3
+}
+
+message SetRequest {
+  string key = 1;
+  CachedValue value = 2;
+
+  // Next id: 3
+}
+
+message SetResponse {
+  ResponseResult result = 1;
+
+  // Next id: 2
+}
+
+service ProtoCachedService {
+  rpc get(GetRequest) returns (GetResponse);
+  rpc set(SetRequest) returns (SetResponse);
+}
