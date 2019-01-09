@@ -55,7 +55,7 @@ message SetResponse {
   // Next id: 2
 }
 
-service ProtoCached {
-  rpc get(GetRequest) returns (GetResponse);
-  rpc set(SetRequest) returns (SetResponse);
+service Protocached {
+  rpc Get(GetRequest) returns (GetResponse);
+  rpc Set(SetRequest) returns (SetResponse);
 }
