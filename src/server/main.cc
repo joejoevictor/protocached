@@ -19,7 +19,7 @@ class ProtocachedServiceImpl final : public ::protocached::Protocached::Service 
     ::protocached::GetResponse* response
   ) override {
     ::protocached::CachedValue cachedValue;
-    cachedValue.set_value("This is a hard-coded value");
+    cachedValue.set_value("Received key: <" + request -> key() + ">" );
     response -> mutable_value() -> CopyFrom(cachedValue);
     return ::grpc::Status::OK;
   } 
