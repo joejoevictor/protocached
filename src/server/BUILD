@@ -8,6 +8,8 @@ cc_binary(
     ],
     deps = [
         "//src/proto:protocached_cc_proto",
+        "//src/server/data_store:data_store",
+        "//src/server/data_store:lru_cache_data_store",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )
