@@ -15,7 +15,9 @@ using grpc::ClientContext;
 using grpc::Status;
 using protocached::CachedValue;
 using protocached::GetRequest;
+using protocached::SetRequest;
 using protocached::GetResponse;
+using protocached::SetResponse;
 using protocached::Protocached;
 using protocached::ResponseResult;
 
@@ -40,42 +42,38 @@ class ProtocachedClient {
 
     // Passing the value back
     cached_value.set_value(response.value().value());
-
-    ResponseResult result;
-    if (status.ok()) {
-      result.set_result_status(ResponseResult::SUCCESS);
-    } else {
-      result.set_result_status(ResponseResult::ERROR);
-      result.set_error_message(status.error_code() + ": " +
-                               status.error_message());
-    }
-    return result;
+    return getResultFromStatus(status);
   }
 
-  ResponseResult Set(const ::std::string &key, const ::std::string &value) {
-    ::protocached::SetRequest request;
+  // ResponseResult Set(const ::std::string &key, const ::std::string &value) {
+  ResponseResult Set(
+    const ::std::string &key,
+    const CachedValue &cached_value
+  ) {
+    SetRequest request;
     request.set_key(key);
-    CachedValue cached_value;
-    cached_value.set_value(value);
     request.mutable_value() -> CopyFrom(cached_value);
-    ::protocached::SetResponse response;
+    SetResponse response;
     ClientContext context;
 
     Status status = stub_->Set(&context, request, &response);
-
-    ResponseResult result;
-    if (status.ok()) {
-      result.set_result_status(ResponseResult::SUCCESS);
-    } else {
-      result.set_result_status(ResponseResult::ERROR);
-      result.set_error_message(status.error_code() + ": " +
-                               status.error_message());
-    }
-    return result;
+    return getResultFromStatus(status);
   }
 
  private:
   std::unique_ptr<Protocached::Stub> stub_;
+
+  ResponseResult getResultFromStatus(const Status &status) {
+    ResponseResult result;
+    if (status.ok()) {
+      result.set_result_status(ResponseResult::SUCCESS);
+    } else {
+      result.set_result_status(ResponseResult::ERROR);
+      result.set_error_message(status.error_code() + ": " +
+                               status.error_message());
+    }
+    return result;
+  }
 };
 
 int main() {
@@ -113,7 +111,9 @@ int main() {
       ::std::cin >> input;
       ::std::string value = input;
       ::std::cout << ::std::endl;
-      ResponseResult response_result = client.Set(key, value);
+      CachedValue cached_value;
+      cached_value.set_value(value);
+      ResponseResult response_result = client.Set(key, cached_value);
       if (response_result.result_status() == ResponseResult::SUCCESS) {
         ::std::cout << "Set successful!" << ::std::endl;
       } else {
