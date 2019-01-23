@@ -13,6 +13,10 @@
 #include "src/server/data_store/data_store.h"
 #include "src/server/data_store/lru_cache_data_store.h"
 
+using protocached::datastore::OperationStatus;
+using protocached::datastore::DataStore;
+using protocached::datastore::lrucache::LruCacheDataStore;
+
 // TODO(joejoevictor): Move this to separate header and implementation file
 class ProtocachedServiceImpl final : public ::protocached::Protocached::Service {
 private:
@@ -33,8 +37,11 @@ public:
     ::protocached::GetResponse* response
   ) override {
     ::protocached::CachedValue cachedValue;
-    ::std::string value_result = data_store -> Get(request -> key());
-    response -> mutable_value() -> set_value(value_result);
+    ::std::string value;
+    OperationStatus status = data_store -> Get(request -> key(), value);
+    if (status == OperationStatus::KEY_FOUND) {
+      response -> mutable_value() -> set_value(value);
+    }
     return ::grpc::Status::OK;
   }
 
