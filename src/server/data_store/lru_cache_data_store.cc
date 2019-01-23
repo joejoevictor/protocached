@@ -1,5 +1,9 @@
 #include "lru_cache_data_store.h"
 
+using protocached::datastore::OperationStatus;
+using protocached::datastore::lrucache::KeyValuePair;
+using protocached::datastore::lrucache::LruCacheDataStore;
+
 ::std::string KeyValuePair::get_key() const {
   return key;
 }
@@ -9,17 +13,20 @@
 }
 
 // This is not thread safe and very naive implementation.
-::LruCacheDataStore::LruCacheDataStore(::std::uint32_t capacity) {
+LruCacheDataStore::LruCacheDataStore(::std::uint32_t capacity) {
   capacity = capacity;
   key_iterator_map = ::std::unordered_map<::std::string, ::std::list<KeyValuePair>::iterator>();
   pairs = ::std::list<KeyValuePair>();
 }
 
-::LruCacheDataStore::~LruCacheDataStore() {}
+LruCacheDataStore::~LruCacheDataStore() {}
 
-::std::string LruCacheDataStore::Get(::std::string key) {
+OperationStatus LruCacheDataStore::Get(
+  const ::std::string& key,
+  ::std::string& value
+) {
   if (key_iterator_map.find(key) == key_iterator_map.end()) {
-    return nullptr;
+    return OperationStatus::KEY_NOT_FOUND;
   }
   ::std::list<KeyValuePair>::const_iterator existing_pair_iterator = key_iterator_map.at(key);
   // TODO(joejoevictor): This seems dumb. I wonder if we could avoid the copy.
@@ -28,10 +35,14 @@
   key_iterator_map.erase(key);
   pairs.push_back(pair_to_be_inserted);
   key_iterator_map[key] = --(pairs.end());
-  return key_iterator_map.at(key) -> get_value();
+  value = key_iterator_map.at(key) -> get_value();
+  return OperationStatus::KEY_FOUND;
 }
 
-void LruCacheDataStore::Set(::std::string key, ::std::string value) {
+OperationStatus LruCacheDataStore::Set(
+  const ::std::string& key,
+  const ::std::string& value
+) {
   // Case 1: key, value pair is not in the datastore
   if (key_iterator_map.find(key) == key_iterator_map.end()) {
     // Need to evict
@@ -48,4 +59,5 @@ void LruCacheDataStore::Set(::std::string key, ::std::string value) {
   }
   pairs.push_back(KeyValuePair(key, value));
   key_iterator_map[key] = --(pairs.end());
+  return OperationStatus::SET_SUCCEED;
 }

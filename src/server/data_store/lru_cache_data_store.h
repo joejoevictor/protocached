@@ -7,6 +7,14 @@
 #include <cstdint>
 #include "data_store.h"
 
+namespace protocached {
+
+namespace datastore {
+
+namespace lrucache {
+
+using protocached::datastore::OperationStatus;
+
 // Immutable key value pair wrapper
 class KeyValuePair {
 public:
@@ -25,8 +33,8 @@ class LruCacheDataStore : public DataStore {
 public:
   LruCacheDataStore(::std::uint32_t capacity);
   ~LruCacheDataStore();
-  ::std::string Get(::std::string key);
-  void Set(::std::string key, ::std::string value);
+  OperationStatus Get(const ::std::string& key, ::std::string& value);
+  OperationStatus Set(const ::std::string& key, const ::std::string& value);
 
 private:
   ::std::uint32_t capacity;
@@ -34,5 +42,11 @@ private:
   // The map from key to iterator pointing to the the value
   ::std::unordered_map<::std::string, ::std::list<KeyValuePair>::iterator> key_iterator_map;
 };
+
+} // lrucache namespace
+
+} // datastore namespace
+
+} // protocached namespace
 
 #endif

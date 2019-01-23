@@ -3,13 +3,27 @@
 
 #include <string>
 
+namespace protocached {
+
+namespace datastore {
+
+enum OperationStatus {
+  KEY_FOUND,
+  KEY_NOT_FOUND,
+  SET_SUCCEED,
+  SET_FAIL, // TODO(joejoevictor): Couldn't think of when this will happen yet
+};
+
 // TODO(joejoevictor): We should probably put this into a namespace
 class DataStore {
 public:
   virtual ~DataStore() {}
-  // TODO(joejoevictor): Use optional as returned result
-  virtual ::std::string Get(::std::string key) = 0; // Pure virtual
-  virtual void Set(::std::string key, ::std::string value) = 0; // Pure virtual
+  virtual OperationStatus Get(const ::std::string& key, ::std::string& value) = 0; // Pure virtual
+  virtual OperationStatus Set(const ::std::string& key, const ::std::string& value) = 0; // Pure virtual
 };
+
+} // datastore namespace
+
+} // protocached namespace
 
 #endif
